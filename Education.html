@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Finder - Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4faff;
+            color: #333;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+        }
+
+        h1, h2 {
+            color: rgb(231, 171, 61);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Search Bar Section */
+        .search-bar {
+            margin-top: 40px;
+            padding: 40px;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 20px;
+            transition: box-shadow 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .search-bar:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-select, .form-control {
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: rgb(231, 171, 61);
+            border-color: rgb(231, 171, 61);
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(231, 171, 61);
+            transform: scale(1.05);
+        }
+
+        .btn-outline-secondary {
+            border-radius: 10px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: rgb(231, 171, 61);
+            color: #fff;
+        }
+
+        /* ICT Initiatives Section */
+        .ict-initiative {
+            padding: 40px 0;
+        }
+
+        .initiative-box {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .initiative-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .initiative-icon {
+            font-size: 4rem;
+            color: #004aad;
+            margin-bottom: 15px;
+            animation: iconBounce 1.5s infinite;
+        }
+
+        .initiative-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgb(231, 171, 61);
+            margin-bottom: 15px;
+        }
+
+        .initiative-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .btn-outline-light {
+            background-color: rgb(231, 171, 61);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            background-color: rgb(231, 171, 61);
+        }
+
+        /* Parallax Effect */
+        .parallax {
+            background-image: url('https://wallpapercave.com/wp/wp4385848.jpg');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        @media (min-width: 768px) {
+            .ict-initiative .col-md-4 {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+
+    <script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    fetchLocationDetails(lat, long);
+                }, function (error) {
+                    alert("Unable to retrieve your location. Please enter manually.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function fetchLocationDetails(lat, long) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const address = data.display_name;
+                    document.getElementById('location').value = address;
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = long;
+                })
+                .catch(error => {
+                    alert("Unable to fetch location details. Please enter manually.");
+                });
+        }
+
+        function fetchCoordinatesFromAddress(address) {
+            const searchQuery = `${address}, India`;
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const lat = data[0].lat;
+                        const long = data[0].lon;
+                        document.getElementById('latitude').value = lat;
+                        document.getElementById('longitude').value = long;
+                        openGoogleMaps();
+                    } else {
+                        alert("Unable to find the location. Please try a more specific address.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error fetching coordinates. Please try again.");
+                });
+        }
+
+        function openGoogleMaps() {
+            const locationInput = document.getElementById('location').value;
+            const lat = document.getElementById('latitude').value;
+            const long = document.getElementById('longitude').value;
+            const schoolType = document.querySelector('select[name="school_type"]').value;
+
+            if (schoolType) {
+                let schoolQuery = encodeURIComponent(`${schoolType} near me`);
+
+                if (lat && long) {
+                    window.open(`https://www.google.com/maps/search/${schoolQuery}/@${lat},${long},15z`, '_blank');
+                } else if (locationInput) {
+                    fetchCoordinatesFromAddress(locationInput);
+                } else {
+                    alert('Please select a school type and enter a valid location!');
+                }
+            } else {
+                alert('Please select a school type and enter a valid location!');
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- Search Bar Section -->
+    <div class="container">
+        <div class="search-bar text-center">
+            <h1>Find Educational Opportunities</h1>
+            <form onsubmit="openGoogleMaps(); return false;" class="row g-3 justify-content-center">
+
+                <!-- School Type Dropdown -->
+                <div class="col-md-5">
+                    <select class="form-select" name="school_type" required>
+                        <option value="" disabled selected>Select Educational Institution...</option>
+                        <option value="Government School">Government School</option>
+                        <option value="Government Boys High School">Government Boys High School</option>
+                        <option value="Government Girls High School">Government Girls High School</option>
+                        <option value="Free Educational Courses">Free Educational Courses</option>
+                    </select>
+                </div>
+
+                <!-- Location Input with Option to Use Current Location -->
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Enter location manually">
+                        <button type="button" class="btn btn-outline-secondary" onclick="getCurrentLocation()">Use Current Location</button>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Search Schools</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Parallax Section -->
+    <div class="parallax">
+        Inspiring Future Generations
+    </div>
+
+    <!-- ICT Initiatives Section -->
+    <div class="container ict-initiative">
+        <h2>ICT Initiatives in Education</h2>
+        <div class="row">
+            <!-- PRERNA -->
+            <div class="col-md-4">
+                <div class="initiative-box">
+                    <i class="fas fa-lightbulb initiative-icon"></i>
+                    <h3 class="initiative-title">PRERNA</h3>
+                    <p class="initiative-description">
+                        A learning platform focused on improving foundational literacy and numeracy.
+                    </p>
+                    <a href="https://prerana.education.gov.in/" target="_blank" class="btn btn-outline-light">Explore</a>
+                </div>
+            </div>
+
+            <!-- ePathshala -->
+            <div class="col-md-4">
+                <div class="initiative-box">
+                    <i class="fas fa-book initiative-icon"></i>
+                    <h3 class="initiative-title">ePathshala</h3>
+                    <p class="initiative-description">
+                        Access e-books and educational materials from NCERT's digital library.
+                    </p>
+                    <a href="https://epathshala.nic.in/" target="_blank" class="btn btn-outline-light">Explore</a>
+                </div>
+            </div>
+
+            <!-- NISHTHA -->
+            <div class="col-md-4">
+                <div class="initiative-box">
+                    <i class="fas fa-chalkboard-teacher initiative-icon"></i>
+                    <h3 class="initiative-title">NISHTHA</h3>
+                    <p class="initiative-description">
+                        A national program focused on teacher training for improved student learning outcomes.
+                    </p>
+                    <a href="https://itpd.ncert.gov.in/" target="_blank" class="btn btn-outline-light">Explore</a>
+                </div>
+            </div>
+
+            <!-- Vidyanjali -->
+            <div class="col-md-4">
+                <div class="initiative-box">
+                    <i class="fas fa-hands-helping initiative-icon"></i>
+                    <h3 class="initiative-title">Vidyanjali</h3>
+                    <p class="initiative-description">
+                        A school volunteer program to strengthen schools through community and private sector involvement.
+                    </p>
+                    <a href="https://vidyanjali.education.gov.in/" target="_blank" class="btn btn-outline-light">Explore</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

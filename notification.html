@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Community Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #f0f0f5, #ffffff);
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            background-color: #ffc107; /* Changed to match notification button color */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar ul li {
+            display: inline;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            text-decoration: underline;
+            color: #e0a800; /* Slightly darker for hover */
+        }
+
+        /* Main container */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar input {
+            width: 70%;
+            padding: 12px;
+            border-radius: 30px;
+            border: 1px solid #ffc107; /* Match the button color */
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: #e0a800; /* Darker color on focus */
+        }
+
+        .search-bar button {
+            background-color: #ffc107; /* Changed to match notification button color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: -50px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #e0a800; /* Darker shade for hover */
+        }
+
+        /* Quick Links */
+        .quick-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .quick-link-btn {
+            flex: 1;
+            margin: 0 10px;
+            background: #ffc107; /* Changed to match notification button color */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: bounceIn 0.6s;
+        }
+
+        .quick-link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .quick-link-btn i {
+            font-size: 30px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Notification Section */
+        .notification-section {
+            text-align: center;
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .notification-btn {
+            background-color: #ffc107; /* Changed to match notification button color */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s;
+            animation: fadeInUp 0.5s ease-in-out;
+        }
+
+        .notification-btn:hover {
+            background-color: #e0a800; /* Darker shade for hover */
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #dc3545; /* Notification count color */
+            color: white;
+            border-radius: 50%;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        .notification-popup {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 300px;
+            max-height: 300px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .notification-popup.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #1e90ff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-top: 50px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Community Connect</div>
+            <ul>
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="#">Donate</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="Search for notifications or services...">
+            <button>🔍</button>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <button class="quick-link-btn">
+                <i>🍲</i>
+                Food Distribution
+            </button>
+            <button class="quick-link-btn">
+                <i>🩺</i>
+                Healthcare Services
+            </button>
+            <button class="quick-link-btn">
+                <i>📚</i>
+                Education Support
+            </button>
+            <button class="quick-link-btn">
+                <i>🤝</i>
+                Volunteer Opportunities
+            </button>
+        </div>
+
+        <!-- Notification Section -->
+        <div class="notification-section">
+            <button class="notification-btn" onclick="toggleNotifications()">
+                Notifications
+                <span id="notificationCount" class="notification-count">4</span>
+            </button>
+
+            <div id="notificationPopup" class="notification-popup">
+                <div class="notification-item">
+                    <span>Donation received!</span>
+                    <button class="mark-as-read-btn" onclick="markAsRead(this)">✔️</button>
+                </div>
+                <div class="notification-item">
+                    <span>Healthcare camp on 20th October</span>
+                    <button class="mark-as-read-btn" onclick="markAsRead(this)">✔️</button>
+                </div>
+                <div class="notification-item">
+                    <span>New Education programs available</span>
+                    <button class="mark-as-read-btn" onclick="markAsRead(this)">✔️</button>
+                </div>
+                <div class="notification-item">
+                    <span>Food Drive on 30th October</span>
+                    <button class="mark-as-read-btn" onclick="markAsRead(this)">✔️</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2024 Community Connect | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleNotifications() {
+            var popup = document.getElementById("notificationPopup");
+            popup.classList.toggle('show');
+        }
+
+        function markAsRead(button) {
+            var notificationItem = button.parentNode;
+            notificationItem.classList.add('read');
+            button.remove();
+
+            var notificationCount = document.getElementById("notificationCount");
+            var count = parseInt(notificationCount.textContent);
+            count = Math.max(0, count - 1);
+            notificationCount.textContent = count;
+
+            if (count === 0) {
+                notificationCount.style.display = 'none';
+            }
+        }
+
+        window.onclick = function(event) {
+            var popup = document.getElementById("notificationPopup");
+            if (!popup.contains(event.target) && event.target !== document.querySelector('.notification-btn')) {
+                popup.classList.remove('show');
+            }
+        }
+    </script>
+
+</body>
+</html>

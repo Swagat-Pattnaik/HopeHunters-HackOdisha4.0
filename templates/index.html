@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Recommendation System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e2f; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background 0.5s;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #2a2a3a; /* Darker card background */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #00d4ff; /* Futuristic accent color */
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #cccccc; /* Lighter gray for labels */
+        }
+
+        input {
+            padding: 15px;
+            font-size: 16px;
+            border: 1px solid #444; /* Darker border */
+            border-radius: 5px;
+            background-color: #3a3a4e; /* Input background */
+            color: #ffffff; /* Input text color */
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            border-color: #00d4ff; /* Accent color on focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+
+        button {
+            padding: 15px;
+            background-color: #00d4ff; /* Accent button color */
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #00a3b0; /* Darker shade on hover */
+            transform: translateY(-2px);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            background: #3a3a4e; /* Dark background for list items */
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            transition: transform 0.2s, background 0.2s;
+            animation: fadeInUp 0.3s ease forwards;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+            background: #4a4a5e; /* Slightly lighter on hover */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            input, button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Job Recommendation System</h1>
+        <form method="POST">
+            <label for="age">Enter Age:</label>
+            <input type="number" id="age" name="age" required>
+        
+            <label for="height">Enter Height (in feet):</label>
+            <input type="text" id="height" name="height" required>
+        
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        {% if recommendations %}
+        <h2>Recommended Jobs:</h2>
+        <ul>
+            {% for job in recommendations %}
+            <li>{{ job }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</body>
+</html>

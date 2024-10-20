@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HopeHunters Donation Cards</title>
+
+    <style>
+        body {
+            background-color: #e3f2fd; /* Light blue background */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow-y: auto; /* Allow scrolling */
+        }
+
+        header {
+            background-color: rgb(231, 171, 61); /* Header background */
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: auto; /* Center the button container */
+            padding: 20px;
+        }
+
+        .button {
+            background-color: rgb(231, 171, 61);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:hover {
+            transform: translateY(-5px);
+            background-color: rgb(231, 171, 61);
+        }
+
+        .big-button {
+            grid-column: span 3;
+            background-color: #2196F3;
+            font-size: 24px;
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .big-button:hover {
+            transform: scale(1.05);
+            background-color: #1e88e5;
+        }
+
+        @media (max-width: 600px) {
+            .button {
+                font-size: 16px;
+                padding: 15px;
+            }
+
+            .big-button {
+                font-size: 20px;
+                padding: 20px;
+            }
+        }
+
+        /* Popup Styles */
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%; /* Full width */
+            max-width: 800px; /* Optional max width */
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            background-color: #f44336; /* Red background */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* HopeHunters Card Info Styles */
+        .info-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px; /* Space for scrolling */
+            line-height: 1.6; /* Better readability */
+            width: 90%; /* Full width */
+        }
+
+        .info-title {
+            font-size: 24px;
+            color: rgb(231, 171, 61);
+            margin-bottom: 20px;
+        }
+
+        .info-text {
+            font-size: 18px;
+            color: #555;
+            text-align: center; /* Centered text */
+        }
+
+        .highlight {
+            color: #2196F3; /* Highlighted text color */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Welcome to the HopeHunters Donation Card Portal
+    </header>
+
+    <h1> Cards of Rights</h1>
+
+    <div class="button-container">
+        <button class="button" onclick="window.location.href='https://uidai.gov.in/en/my-aadhaar/get-aadhaar.html'">Aadhaar Card</button>
+        <button class="button" onclick="window.location.href='https://voters.eci.gov.in/login'">Voter's Card</button>
+        <button class="button" onclick="window.location.href='https://pdsodisha.gov.in/NFSA/CitizenshipEnrollmentNew/CitizenshipEnrollmentNew'">Ration Card/BPL Card</button>
+        <button class="button" onclick="window.location.href='https://services.india.gov.in/service/listing?cat_id=5&ln=en'">Health Cards</button>
+        <button class="button" onclick="window.location.href='#'">Other Cards</button>
+        <button class="big-button" onclick="showPopup()">HopeHunters Card</button>
+    </div>
+
+    <!-- Popup for HopeHunters Donation Card -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>Thank You for Your Cooperation!</h2>
+            <p>The HopeHunters Card will be generated for you as soon as possible within 5 to 7 days and will be available to download from our website at the notifications page. Along with that, our agent will reach out to you with the hardcopy within 10 days of applying.</p>
+            <p><strong>Caution:</strong> If you haven't registered yet, we would not be able to generate your HopeHunters Card, so please log in first. If you register without logging in, you will receive a cancellation notification or a call from our agent within 1 to 5 hours.</p>
+            <button class="close-btn" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <!-- HopeHunters Card Information Section -->
+    <div class="info-section">
+        <h2 class="info-title">What is a HopeHunters Card?</h2>
+        <p class="info-text">
+            The <span class="highlight">HopeHunters Card</span> is a revolutionary initiative aimed at providing essential benefits to the underprivileged sections of our society. 
+            This card serves as a gateway for the poor to receive various support measures, including <span class="highlight">financial assistance</span>, clothing, and other necessary items. 
+            By possessing this card, it becomes significantly easier for us to identify individuals in need and provide them with the help they deserve.
+        </p>
+        <p class="info-text">
+            Our mission with the HopeHunters Card is to ensure that no one goes hungry or lacks basic necessities. 
+            We understand that many individuals and families face daily struggles, and our goal is to alleviate some of that burden through this program. 
+            With the card, holders will gain access to essential resources that can help improve their quality of life. 
+            Whether it's food, clothing, or financial support, the HopeHunters Card is designed to bring hope and assistance where it's needed the most.
+        </p>
+        <p class="info-text">
+            What’s more, the application for the HopeHunters Card is absolutely <span class="highlight">free of charge</span> and is designed exclusively for the less fortunate members of our community. 
+            We believe that everyone deserves a chance to lead a better life, and with the HopeHunters Card, we are committed to making that a reality. 
+            By applying for this card, you become part of a compassionate network working towards uplifting the less fortunate in our society.
+        </p>
+        <p class="info-text">
+            The process of application is simple and straightforward. Once you apply, our team will verify your eligibility, and upon approval, the card will be issued. 
+            Your support and cooperation will ensure that the benefits reach those who truly need them, creating a ripple effect of positivity and upliftment throughout our society. 
+            Together, we can make a difference, one card at a time, as we strive to provide support, dignity, and hope for a brighter future.
+        </p>
+        <p class="info-text">
+            Join us in this noble cause, and let the HopeHunters Card be a symbol of our collective effort to help the needy. 
+            With your participation, we can ensure that everyone has the opportunity to lead a fulfilling life, filled with hope and possibilities. 
+            Together, let’s bring about positive change and ensure that no one is left behind.
+        </p>
+    </div>
+
+    <script>
+        // Function to show the popup
+        function showPopup() {
+            document.getElementById('popup').style.display = 'flex';
+        }
+
+        // Function to close the popup
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

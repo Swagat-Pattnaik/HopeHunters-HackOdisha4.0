@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shelter Finder - Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .search-bar {
+            margin-top: 20px;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            animation: fadeIn 0.5s ease; /* Fade in animation */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .search-bar h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: rgb(231, 171, 61);
+        }
+
+        .btn-primary {
+            background-color: rgb(231, 171, 61);
+            border-color: rgb(231, 171, 61);
+            transition: transform 0.2s; /* Scale effect on hover */
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05); /* Slightly grow on hover */
+        }
+
+        .carousel-inner {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .carousel-item img {
+            max-height: 400px;
+            object-fit: cover;
+            width: 100%;
+            transition: transform 0.5s ease; /* Image scaling on hover */
+        }
+
+        .carousel-item:hover img {
+            transform: scale(1.05); /* Scale effect on hover */
+        }
+
+        .job-listing {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            border-radius: 10px;
+            transition: background-color 0.3s; /* Smooth background color transition */
+        }
+
+        .job-listing:hover {
+            background-color: rgba(0, 0, 0, 0.8); /* Darken on hover */
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgb(231, 171, 61);
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .container h2 {
+            font-weight: bold;
+            color: rgb(231, 171, 61);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Text shadow for depth */
+        }
+    </style>
+    <script>
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const long = position.coords.longitude;
+                    fetchLocationDetails(lat, long);
+                }, function (error) {
+                    alert("Unable to retrieve your location. Please enter manually.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function fetchLocationDetails(lat, long) {
+            const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const address = data.display_name;
+                    document.getElementById('location').value = address;
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = long;
+                })
+                .catch(error => {
+                    console.error("Error fetching location details:", error);
+                    alert("Unable to fetch location details. Please enter manually.");
+                });
+        }
+
+        function fetchCoordinatesFromAddress(address) {
+            // Ensure the search is regionally specific by appending "India"
+            const searchQuery = `${address}, India`; // Use backticks here
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1`; // Use backticks here
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const lat = data[0].lat;
+                        const long = data[0].lon;
+                        document.getElementById('latitude').value = lat;
+                        document.getElementById('longitude').value = long;
+                        openGoogleMaps();
+                    } else {
+                        alert("Unable to find the location. Please try a more specific address.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching coordinates:", error);
+                    alert("Error fetching coordinates. Please try again.");
+                });
+        }
+
+        function openGoogleMaps() {
+            const locationInput = document.getElementById('location').value;
+            const lat = document.getElementById('latitude').value;
+            const long = document.getElementById('longitude').value;
+            const jobTitle = document.querySelector('select[name="job_title"]').value;
+
+            if (jobTitle) {
+                let jobQuery = encodeURIComponent(`${jobTitle} near me`); // Use backticks here
+
+                if (lat && long) {
+                    // If lat/long are available, use them for Google Maps
+                    window.open(`https://www.google.com/maps/search/${jobQuery}/@${lat},${long},15z`, '_blank'); // Use backticks here
+                } else if (locationInput) {
+                    // If manual location was entered, fetch the coordinates first
+                    fetchCoordinatesFromAddress(locationInput);
+                } else {
+                    alert('Please select a Shelter Type and enter a valid location!');
+                }
+            } else {
+                alert('Please select a Shelter Type and enter a valid location!');
+            }
+        }
+
+        // Function to set the job title in the dropdown
+        function setJobTitle(jobTitle) {
+            const jobSelect = document.querySelector('select[name="job_title"]');
+            jobSelect.value = jobTitle;
+
+            // Optionally, scroll to the search bar
+            document.querySelector('.search-bar').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Search Bar Section -->
+    <div class="container">
+        <div class="search-bar text-center">
+            <h1>Get to the nearest Shelter</h1>
+            <form onsubmit="openGoogleMaps(); return false;" class="row g-3 justify-content-center">
+                
+                <!-- Job Title Dropdown -->
+                <div class="col-md-5">
+                    <select class="form-select" name="job_title" required>
+                        <option value="" disabled selected>Select Home Type</option>
+                        <option value="Ngos">Ngos</option>
+                        <option value="Orphanage">Orphanage</option>
+                        <option value="Oldage Home">Oldage Home</option>
+                        <option value="Government provided free shelter">Government Shelter</option>
+                    </select>
+                </div>
+
+                <!-- Location Input with Option to Use Current Location -->
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Enter location manually">
+                        <button type="button" class="btn btn-outline-secondary" onclick="getCurrentLocation()">Use Current Location</button>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Search Home</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Featured Jobs Section (Carousel) -->
+    <div class="container mt-5">
+        <h2>We try our Best to be the God of those who have no one Left with</h2>
+        <div id="jobCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="ngo.png" class="d-block w-100" alt="ngo">
+                    <div class="carousel-caption job-listing">
+                        <h2>NGOs</h2>
+                        <button type="button" class="btn btn-outline-light" onclick="setJobTitle('NGOs')">View Details</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="orp.jpg" class="d-block w-100" alt="orphanage">
+                    <div class="carousel-caption job-listing">
+                        <h2>Government Shelter</h2>
+                        <button type="button" class="btn btn-outline-light" onclick="setJobTitle('Government Shelter')">View Details</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="poree.jpg" class="d-block w-100" alt="orphanage">
+                    <div class="carousel-caption job-listing">
+                        <h2>Orphanages</h2>
+                        <button type="button" class="btn btn-outline-light" onclick="setJobTitle('Orphanage')">View Details</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="old.jpg" class="d-block w-100" alt="oldage home">
+                    <div class="carousel-caption job-listing">
+                        <h2>Oldage Homes</h2>
+                        <button type="button" class="btn btn-outline-light" onclick="setJobTitle('Oldage Home')">View Details</button>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#jobCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#jobCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

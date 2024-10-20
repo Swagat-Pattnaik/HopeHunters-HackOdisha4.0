@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Donation Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset styles for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+            color: #2c3e50;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto; /* Allow vertical scrolling */
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            background-color: #ffc107; /* Highlight color */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Main container */
+        .container {
+            background-image: image-set("heart.webp");
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px; /* Add margin to prevent content overflow */
+        }
+
+        .container:hover {
+            transform: scale(1.02); /* Slight zoom on hover */
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        /* Donation Options */
+        .donation-option {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9fbe7;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .donation-option:hover {
+            background-color: #f0e68c; /* Lighter shade on hover */
+            transform: translateY(-2px); /* Lift effect */
+        }
+
+        .highlight {
+            font-weight: bold;
+            background-color: #fff3cd; /* Highlight color for money and clothes */
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+        }
+
+        /* Confirmation Section */
+        .confirmation-message {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .qr-code {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px solid #e3f2fd;
+        }
+
+        img {
+            width: 100%; /* Make the QR code responsive */
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* Cancel Button */
+        .cancel-button {
+            background-color: #dc3545; /* Red color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+            font-size: 1.1em;
+        }
+
+        .cancel-button:hover {
+            background-color: #c82333; /* Darker shade on hover */
+            transform: scale(1.05); /* Slight enlargement on hover */
+        }
+
+        /* Payment Method Section */
+        .payment-method {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .payment-option {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .payment-option:hover {
+            background-color: #fff3cd; /* Light highlight */
+            transform: translateY(-2px); /* Lift effect */
+        }
+
+        /* User Info Section */
+        .user-info {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .user-info input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .user-info input:focus {
+            border-color: #ffc107; /* Highlight on focus */
+            outline: none;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .login-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .login-section input:focus {
+            border-color: #ffc107; /* Highlight on focus */
+            outline: none;
+        }
+
+        /* Pop-up Modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            animation: zoomIn 0.5s; /* Zoom-in effect for modal */
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Donation Page</h1>
+    </header>
+
+    <div class="container">
+        <h2>What do you want to donate?</h2>
+
+        <div class="donation-option highlight" onclick="selectDonation('money')">
+            <span>💰 Money </span>
+        </div>
+        <div class="donation-option highlight" onclick="selectDonation('clothes')">
+            <span>👕 Clothes</span>
+        </div>
+        <div class="donation-option highlight" onclick="directThankYou('toys')">
+            <span>🧸 Toys for Kids</span>
+        </div>
+        <div class="donation-option highlight" onclick="directThankYou('homeMaterials')">
+            <span>🏠 Home Usable Materials</span>
+        </div>
+
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <h3>Please Log In</h3>
+            <input type="text" id="loginUsername" placeholder="Username" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button onclick="login()">Log In</button>
+        </div>
+
+        <!-- User Info Section -->
+        <div class="user-info" id="userInfo">
+            <h3>Enter Your Details</h3>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="text" id="address" placeholder="Your Address" required>
+            <input type="tel" id="phone" placeholder="Your Phone Number" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <button onclick="submitDetails()">Submit</button>
+        </div>
+
+        <!-- Payment Method Section -->
+        <div class="payment-method" id="paymentMethod">
+            <h3>Select Payment Method</h3>
+            <div class="payment-option" onclick="selectPayment('online')">Online Payment</div>
+            <div class="payment-option" onclick="selectPayment('cash')">Cash</div>
+        </div>
+
+        <!-- Confirmation Message -->
+        <div class="confirmation-message" id="confirmationMessage"></div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section" id="qrSection">
+            <div class="qr-code">
+                <img src="qr.webp" alt="QR Code">
+            </div>
+        </div>
+
+        <!-- Cancel Button -->
+        <button class="cancel-button" onclick="cancelDonation()">Cancel Donation</button>
+
+        <!-- Thank You Modal -->
+        <div class="modal" id="thankYouModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Thank You!</h2>
+                <p>Your generosity means a lot to us. Our agent will reach you soon by your phone number and address.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectDonation(type) {
+            const loginSection = document.getElementById('loginSection');
+            const userInfo = document.getElementById('userInfo');
+            const paymentMethod = document.getElementById('paymentMethod');
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            const qrSection = document.getElementById('qrSection');
+
+            confirmationMessage.style.display = 'none';
+            userInfo.style.display = 'none';
+            paymentMethod.style.display = 'none';
+            qrSection.style.display = 'none';
+
+            if (type === 'money') {
+                loginSection.style.display = 'block'; // Show login section for money donation
+            } else {
+                directThankYou(type); // Directly show thank you for other donations
+            }
+        }
+
+        function directThankYou(type) {
+            const thankYouModal = document.getElementById('thankYouModal');
+            thankYouModal.style.display = 'flex'; // Show thank you modal
+            document.getElementById('confirmationMessage').textContent = `Thank you for donating ${type}.`;
+            document.getElementById('confirmationMessage').style.display = 'block';
+        }
+
+        function login() {
+            const loginSection = document.getElementById('loginSection');
+            const userInfo = document.getElementById('userInfo');
+            loginSection.style.display = 'none'; // Hide login section
+            userInfo.style.display = 'block'; // Show user info section
+        }
+
+        function submitDetails() {
+            const userInfo = document.getElementById('userInfo');
+            const paymentMethod = document.getElementById('paymentMethod');
+
+            userInfo.style.display = 'none';
+            paymentMethod.style.display = 'block'; // Show payment method section
+        }
+
+        function selectPayment(method) {
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            const qrSection = document.getElementById('qrSection');
+            const thankYouModal = document.getElementById('thankYouModal');
+
+            if (method === 'online') {
+                confirmationMessage.textContent = 'You have selected Online Payment. Please scan the QR code below:';
+                confirmationMessage.style.display = 'block';
+                qrSection.style.display = 'block'; // Show QR code section
+                thankYouModal.style.display = 'none'; // Hide thank you modal
+            } else if (method === 'cash') {
+                confirmationMessage.textContent = 'Thank you for choosing to donate in cash! Our agent will reach out to you soon by your mobile number and address.';
+                confirmationMessage.style.display = 'block';
+                qrSection.style.display = 'none'; // Hide QR code section
+                thankYouModal.style.display = 'flex'; // Show thank you modal
+            }
+        }
+
+        function cancelDonation() {
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            confirmationMessage.textContent = '';
+            confirmationMessage.style.display = 'none';
+
+            const paymentMethod = document.getElementById('paymentMethod');
+            paymentMethod.style.display = 'none';
+
+            const qrSection = document.getElementById('qrSection');
+            qrSection.style.display = 'none';
+
+            // Resetting user info and login sections
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'none';
+        }
+
+        function closeModal() {
+            document.getElementById('thankYouModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
